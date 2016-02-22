@@ -1911,6 +1911,8 @@ AC_CONFIG_FILES([
   plugins/regex_remap/Makefile
   plugins/stats_over_http/Makefile
   plugins/tcpinfo/Makefile
+  plugins/drm_flv/Makefile
+  plugins/drm_mp4/Makefile
   proxy/Makefile
   proxy/api/ts/Makefile
   proxy/config/Makefile
@@ -1970,6 +1972,7 @@ AS_IF([test "x$enable_experimental_plugins" = xyes], [
     plugins/experimental/ts_lua/Makefile
     plugins/experimental/url_sig/Makefile
     plugins/experimental/xdebug/Makefile
+    plugins/experimental/mp4/Makefile
 ])])
 
 AS_IF([test "x$enable_cppapi" = xyes], [
