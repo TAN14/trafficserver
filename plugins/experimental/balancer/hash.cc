@@ -147,22 +147,26 @@ struct HashBalancer : public BalancerInstance {
     iterations = 10,
   };
 
-  HashBalancer() { this->hash_parts.push_back(HashTxnUrl); }
+  HashBalancer() {
+	  this->is_balancer = false;
+	  this->path = NULL;
+	  this->hash_parts.push_back(HashTxnUrl);
+  }
 
   void
-  push_target(const BalancerTarget &target)
+  push_target(BalancerTarget &target)
   {
     for (unsigned i = 0; i < iterations; ++i) {
       this->hash_ring.insert(std::make_pair(md5_key(target, i), target));
     }
   }
 
-  const BalancerTarget &
+  BalancerTarget &
   balance(TSHttpTxn txn, TSRemapRequestInfo *rri)
   {
     md5_key key;
     MD5_CTX ctx;
-    hash_ring_type::const_iterator loc;
+    hash_ring_type::iterator loc;
 
     // We'd better have some hash functions set by now ...
     TSReleaseAssert(!hash_parts.empty());
@@ -187,8 +191,29 @@ struct HashBalancer : public BalancerInstance {
     return loc->second;
   }
 
+  bool is_roundrobin_balancer() {
+	  return this->is_balancer;
+  }
+
+  TSReturnCode os_response_back_status(uint target_id, TSHttpStatus status) {
+	  return TS_SUCCESS;
+  }
+
+  const char *get_path() {
+    return this->path;
+  }
+
+  void data_destroy() {
+	  if(this->path != NULL){
+		  free((char *)this->path);
+		  this->path = NULL;
+	  }
+  }
+
   hash_ring_type hash_ring;
   hash_part_type hash_parts;
+  char *path;
+  bool is_balancer;
 };
 
 } // namespace
@@ -215,7 +240,7 @@ MakeHashBalancer(const char *options)
       } else if (strcmp(opt, "dstaddr") == 0) {
         hash->hash_parts.push_back(HashTxnDstaddr);
       } else {
-        TSError("balancer: ignoring invalid hash field '%s'", opt);
+        TSError("[balancer] Ignoring invalid hash field '%s'", opt);
       }
     }
 
