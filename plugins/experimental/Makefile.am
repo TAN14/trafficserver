@@ -38,7 +38,8 @@ SUBDIRS = \
  sslheaders \
  stale_while_revalidate \
  url_sig \
- xdebug
+ xdebug \
+ mp4
 
 if HAS_MYSQL
   SUBDIRS += mysql_remap
