@@ -24,7 +24,9 @@ SUBDIRS = \
   libloader \
   regex_remap \
   stats_over_http \
-  tcpinfo
+  tcpinfo \
+  drm_flv \
+  drm_mp4
 
 if BUILD_EXPERIMENTAL_PLUGINS
 SUBDIRS += experimental
