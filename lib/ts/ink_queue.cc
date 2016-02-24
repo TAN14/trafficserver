@@ -200,19 +200,20 @@ freelist_new(InkFreeList *f)
     if (TO_PTR(FREELIST_POINTER(item)) == NULL) {
       uint32_t i;
       void *newp = NULL;
-      size_t alloc_size = 0;
+      size_t alloc_size = f->chunk_size * f->type_size;
+      size_t alignment = 0;
 
       if (ats_hugepage_enabled()) {
-        alloc_size = INK_ALIGN(f->chunk_size * f->type_size, ats_hugepage_size());
+        alignment = ats_hugepage_size();
         newp = ats_alloc_hugepage(alloc_size);
       }
 
       if (newp == NULL) {
-        alloc_size = INK_ALIGN(f->chunk_size * f->type_size, ats_pagesize());
-        newp = ats_memalign(ats_pagesize(), alloc_size);
+        alignment = ats_pagesize();
+        newp = ats_memalign(alignment, INK_ALIGN(alloc_size, alignment));
       }
 
-      ats_madvise((caddr_t)newp, alloc_size, f->advice);
+      ats_madvise((caddr_t)newp, INK_ALIGN(alloc_size, alignment), f->advice);
       SET_FREELIST_POINTER_VERSION(item, newp, 0);
 
       ink_atomic_increment((int *)&f->allocated, f->chunk_size);
@@ -425,6 +426,7 @@ ink_freelists_dump_baselinerel(FILE *f)
     }
     fll = fll->next;
   }
+  fprintf(f, "-----------------------------------------------------------------------------------------\n");
 }
 
 void
@@ -434,7 +436,7 @@ ink_freelists_dump(FILE *f)
   if (f == NULL)
     f = stderr;
 
-  fprintf(f, "     allocated      |        in-use      | type size  |   free list name\n");
+  fprintf(f, "     Allocated      |        In-Use      | Type Size  |   Free List Name\n");
   fprintf(f, "--------------------|--------------------|------------|----------------------------------\n");
 
   uint64_t total_allocated = 0;
@@ -449,6 +451,7 @@ ink_freelists_dump(FILE *f)
     fll = fll->next;
   }
   fprintf(f, " %18" PRIu64 " | %18" PRIu64 " |            | TOTAL\n", total_allocated, total_used);
+  fprintf(f, "-----------------------------------------------------------------------------------------\n");
 }
 
 
