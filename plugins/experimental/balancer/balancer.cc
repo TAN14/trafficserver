@@ -59,8 +59,8 @@ static BalancerTarget MakeBalancerTarget(const char *strval) {
 	target.weight = 1;
 	target.effective_weight = 1;
 	target.current_weight = 0;
-	target.max_fails = 3;
-	target.fail_timeout = 10;
+	target.max_fails = 10;
+	target.fail_timeout = 30;
 	target.down = 0;
 	target.backup = 0;
 	target.fails = 0;
@@ -87,7 +87,7 @@ static BalancerTarget MakeBalancerTarget(const char *strval) {
 	} else {
 		//格式ip:port,是否为备用线路,权重,最大失败次数,禁用时间
 		// 192.168.8.7:80,0,1,1,10   如果只有ip 后面几个参数都是默认值
-		int target_array[4] = { 0, 1, 3, 10 };
+		int target_array[4] = { 0, 1, 10, 30 };
 		uint a_count = sizeof(target_array) / sizeof(target_array[0]);
 		uint s_count = 0;
 		const char *comma = strrchr(strval, ':');
