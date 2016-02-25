@@ -225,7 +225,7 @@ static TSReturnCode look_up_handle (TSCont contp, TSHttpTxn txnp, BalancerTarget
 		  return TS_ERROR;
 		}
 		TSUrlSchemeSet(req_bufp, url_loc,TS_URL_SCHEME_HTTPS,TS_URL_LEN_HTTPS);
-		TSUrlPortSet(req_bufp, url_loc, 443);
+//		TSUrlPortSet(req_bufp, url_loc, 443);＃这里不设置
 		TSHandleMLocRelease(req_bufp, req_loc, url_loc);
 		TSHandleMLocRelease(req_bufp, TS_NULL_MLOC, req_loc);
 	 }
