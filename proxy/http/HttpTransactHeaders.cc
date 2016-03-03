@@ -833,15 +833,18 @@ HttpTransactHeaders::insert_via_header_in_response(HttpTransact::State *s, HTTPH
   int scheme_len = hdrtoken_index_to_length(scheme);
   int32_t hversion = header->version_get().m_version;
 
-  memcpy(via_string, hdrtoken_index_to_wks(scheme), scheme_len);
-  via_string += scheme_len;
+ // modify by daemon.xie
+//  memcpy(via_string, hdrtoken_index_to_wks(scheme), scheme_len);
+//  via_string += scheme_len;
 
   // Common case (I hope?)
   if ((HTTP_MAJOR(hversion) == 1) && HTTP_MINOR(hversion) == 1) {
-    memcpy(via_string, "/1.1 ", 5);
-    via_string += 5;
+//    memcpy(via_string, "/1.1 ", 5);
+//    via_string += 5;
+	 memcpy(via_string, "1.1 ", 4);
+	 via_string += 4;
   } else {
-    *via_string++ = '/';
+//    *via_string++ = '/';
     *via_string++ = '0' + HTTP_MAJOR(hversion);
     *via_string++ = '.';
     *via_string++ = '0' + HTTP_MINOR(hversion);
@@ -849,13 +852,13 @@ HttpTransactHeaders::insert_via_header_in_response(HttpTransact::State *s, HTTPH
   }
   via_string += nstrcpy(via_string, s->http_config_param->proxy_hostname);
   *via_string++ = ' ';
-  *via_string++ = '(';
+//  *via_string++ = '(';
 
-  memcpy(via_string, s->http_config_param->proxy_response_via_string, s->http_config_param->proxy_response_via_string_len);
-  via_string += s->http_config_param->proxy_response_via_string_len;
+//  memcpy(via_string, s->http_config_param->proxy_response_via_string, s->http_config_param->proxy_response_via_string_len);
+//  via_string += s->http_config_param->proxy_response_via_string_len;
 
   if (s->txn_conf->insert_response_via_string > 1) {
-    *via_string++ = ' ';
+//    *via_string++ = ' ';
     *via_string++ = '[';
 
     // incoming_via can be max MAX_VIA_INDICES+1 long (i.e. around 25 or so)
@@ -868,7 +871,7 @@ HttpTransactHeaders::insert_via_header_in_response(HttpTransact::State *s, HTTPH
     *via_string++ = ']';
   }
 
-  *via_string++ = ')';
+//  *via_string++ = ')';
   *via_string = 0;
 
   ink_assert((size_t)(via_string - new_via_string) < (sizeof(new_via_string) - 1));
