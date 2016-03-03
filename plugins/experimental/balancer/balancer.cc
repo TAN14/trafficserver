@@ -156,7 +156,7 @@ static TSReturnCode send_response_handle(TSHttpTxn txnp, BalancerTargetStatus *t
 	//回源check 包括down check
 	if ( targetstatus->target_id >= 0  && (!targetstatus->target_down or (targetstatus->target_down && targetstatus->is_down_check) )) {
 		//当源站没有正常返回的情况下，都会返回ts_error
-		status = TS_HTTP_STATUS_BAD_GATEWAY;
+		status = TS_HTTP_STATUS_SOURCE_SERVICE_UNAVAILABLE;
 		//TODO 如果是回源304 check 的情况该如何处理？
 		//当前的ats ，当文件过期，正好源站不通的时候，返回旧文件，当源站有任务返回的时候，ats 将会返回该内容
 		//TSHttpTxnServerRespNoStoreSet(txn, 1);
@@ -175,13 +175,13 @@ static TSReturnCode send_response_handle(TSHttpTxn txnp, BalancerTargetStatus *t
 		}
 
 		TSDebug("balancer", " target.id == -1 or target_down  == 1!");
-		TSHttpHdrStatusSet(bufp, hdr_loc, TS_HTTP_STATUS_BAD_GATEWAY);
-		TSHttpHdrReasonSet(bufp, hdr_loc,TSHttpHdrReasonLookup(TS_HTTP_STATUS_BAD_GATEWAY),
-				strlen(TSHttpHdrReasonLookup(TS_HTTP_STATUS_BAD_GATEWAY)));
+		TSHttpHdrStatusSet(bufp, hdr_loc, TS_HTTP_STATUS_SOURCE_SERVICE_UNAVAILABLE);
+		TSHttpHdrReasonSet(bufp, hdr_loc,TSHttpHdrReasonLookup(TS_HTTP_STATUS_SOURCE_SERVICE_UNAVAILABLE),
+				strlen(TSHttpHdrReasonLookup(TS_HTTP_STATUS_SOURCE_SERVICE_UNAVAILABLE)));
 
 		buf = (char *) TSmalloc(100);
 
-		sprintf(buf, "502 Source station temporarily unavailable!\n");
+		sprintf(buf, "553 Source Service Unavailable!\n");
 
 		TSHandleMLocRelease(bufp, TS_NULL_MLOC, hdr_loc);
 		//自己会释放点buf,不需要TSfree?
