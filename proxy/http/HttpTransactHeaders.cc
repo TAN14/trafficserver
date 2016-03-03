@@ -827,10 +827,10 @@ HttpTransactHeaders::insert_via_header_in_response(HttpTransact::State *s, HTTPH
   }
 
   char *incoming_via = s->via_string;
-  int scheme = s->next_hop_scheme;
+//  int scheme = s->next_hop_scheme;
 
-  ink_assert(scheme >= 0);
-  int scheme_len = hdrtoken_index_to_length(scheme);
+//  ink_assert(scheme >= 0);
+//  int scheme_len = hdrtoken_index_to_length(scheme);
   int32_t hversion = header->version_get().m_version;
 
  // modify by daemon.xie
