@@ -818,6 +818,7 @@ http_hdr_reason_lookup(unsigned status)
     HTTP_STATUS_ENTRY(510, Not Extended);                    // [RFC2774]
     HTTP_STATUS_ENTRY(511, Network Authentication Required); // [RFC6585]
     // 512-599 Unassigned
+    HTTP_STATUS_ENTRY(553, Source Service Unavailable); // [RFC2616]
   }
 
 #undef HTTP_STATUS_ENTRY
