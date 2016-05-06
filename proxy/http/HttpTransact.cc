@@ -195,6 +195,7 @@ is_negative_caching_appropriate(HttpTransact::State *s)
   case HTTP_STATUS_BAD_GATEWAY:
   case HTTP_STATUS_SERVICE_UNAVAILABLE:
   case HTTP_STATUS_GATEWAY_TIMEOUT:
+  case HTTP_STATUS_SOURCE_SERVICE_UNAVAILABLE:
     return true;
   default:
     break;
